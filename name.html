@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Club Member Card</title>
+    
+    <style>
+        body { 
+            font-family: 'Arial', sans-serif;
+            background-color: #eef2f3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .card {
+            background: white;
+            width: 350px;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .profile-icon {
+            font-size: 50px;
+            background: #f0f0f0;
+            width: 80px;
+            height: 80px;
+            line-height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+        }
+        .status-active { color: #2ecc71; font-weight: bold; }
+        .status-expired { color: #e74c3c; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="card" id="member-card" style="display:none;">
+        <div class="profile-icon">👤</div>
+        <h2 id="display-name">Loading...</h2>
+        <p id="display-id" style="color: #888;"></p>
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+        <p>Status: <span id="display-status"></span></p>
+        <p>Expired Date: <span id="display-expiry"></span></p>
+    </div>
+
+    <script>
+        // Database အသေးစားလေး (ဒီမှာ နာမည်တွေ တိုးလို့ရပါတယ်)
+        const memberData = {
+            "M-001": { name: "Aung Aung", expiry: "2026-12-31" },
+            "M-002": { name: "Su Su", expiry: "2024-01-01" },
+            "M-003": { name: "Ko Kyaw", expiry: "2025-05-20" }
+        };
+
+        // URL က ?id=M-001 ဆိုတာကို ဖတ်တာပါ
+        const params = new URLSearchParams(window.location.search);
+        const memberId = params.get('id');
+
+        if (memberId && memberData[memberId]) {
+            const member = memberData[memberId];
+            const today = new Date();
+            const expDate = new Date(member.expiry);
+
+            // စာသားတွေကို အစားထိုးမယ်
+            document.getElementById('display-name').innerText = member.name;
+            document.getElementById('display-id').innerText = "ID: " + memberId;
+            document.getElementById('display-expiry').innerText = member.expiry;
+
+            // သက်တမ်း စစ်မယ်
+            const statusElement = document.getElementById('display-status');
+            if (expDate >= today) {
+                statusElement.innerText = "Active ✅";
+                statusElement.className = "status-active";
+            } else {
+                statusElement.innerText = "Expired ❌";
+                statusElement.className = "status-expired";
+            }
+
+            // Card ကို ဖော်ပြမယ်
+            document.getElementById('member-card').style.display = "block";
+        } else {
+            document.body.innerHTML = "<h1>Member Not Found!</h1>";
+        }
+    </script>
+</body>
+</html>
